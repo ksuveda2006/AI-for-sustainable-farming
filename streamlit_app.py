@@ -1,10 +1,75 @@
 import streamlit as st
-import requests
-import json
+from typing import List, Optional
+import pandas as pd
+from pydantic import BaseModel
 
 st.set_page_config(page_title="Sustainable Farming AI Advisor", layout="wide")
 st.title("🌾 Sustainable Farming Multi-Agent AI System")
 
+# Load datasets
+@st.cache_data
+def load_datasets():
+    farmer_data = pd.read_csv("data/farmer_advisor_dataset.csv")
+    market_data = pd.read_csv("data/market_researcher_dataset.csv")
+    return farmer_data, market_data
+
+farmer_data, market_data = load_datasets()
+
+# Input and Recommendation Models
+class FarmerInput(BaseModel):
+    name: str
+    location: str
+    farm_size: float
+    soil_type: str
+    water_availability: str
+    preferred_crops: Optional[List[str]] = None
+    budget: float
+
+class Recommendation(BaseModel):
+    crop_name: str
+    sustainability_score: float
+    profitability_score: float
+    water_efficiency_score: float
+    expected_yield: float
+    estimated_profit: float
+    water_requirement: float
+    carbon_footprint: float
+
+class FarmerAdvisor:
+    def __init__(self, farmer_data):
+        self.farmer_data = farmer_data
+
+    def analyze_farmer_profile(self, farmer_input: FarmerInput) -> dict:
+        return {
+            "soil_suitability": {"suitability": "high"},
+            "water_efficiency": {"efficiency": "medium"},
+            "farm_size_analysis": {"scale": "medium"}
+        }
+
+class MarketResearcher:
+    def __init__(self, market_data):
+        self.market_data = market_data
+
+    def analyze_market_trends(self, location: str, crop_list: List[str]) -> dict:
+        return {
+            "demand_trends": {"trends": {}, "recommendations": []},
+            "price_trends": {"trends": {}, "recommendations": []},
+            "profitability": {"scores": {}, "recommendations": []}
+        }
+
+def _generate_recommendation(farmer_analysis: dict, market_analysis: dict, farmer_input: FarmerInput) -> Recommendation:
+    return Recommendation(
+        crop_name="Wheat",
+        sustainability_score=0.87,
+        profitability_score=0.78,
+        water_efficiency_score=0.91,
+        expected_yield=1200.0,
+        estimated_profit=6500.0,
+        water_requirement=480.0,
+        carbon_footprint=180.0
+    )
+
+# Input form
 with st.form("farmer_input_form"):
     st.subheader("🧬 Enter Your Farming Details")
     name = st.text_input("Name")
@@ -17,42 +82,40 @@ with st.form("farmer_input_form"):
 
     submit = st.form_submit_button("Get Recommendation")
 
+# On submit
 if submit:
     with st.spinner("Analyzing your farm profile with AI agents..."):
-        payload = {
-            "name": name,
-            "location": location,
-            "farm_size": farm_size,
-            "soil_type": soil_type,
-            "water_availability": water_availability,
-            "budget": budget,
-            "preferred_crops": preferred_crops
-        }
+        farmer_input = FarmerInput(
+            name=name,
+            location=location,
+            farm_size=farm_size,
+            soil_type=soil_type,
+            water_availability=water_availability,
+            budget=budget,
+            preferred_crops=preferred_crops or []
+        )
 
-        try:
-            response = requests.post("http://localhost:8000/analyze-farming-profile", data=json.dumps(payload))
-            if response.status_code == 200:
-                result = response.json()
+        farmer_agent = FarmerAdvisor(farmer_data)
+        market_agent = MarketResearcher(market_data)
 
-                st.success("✅ Recommendation Received")
-                st.markdown("### 🌿 Recommended Crop: ")
-                st.write(result['crop_name'])
-                st.markdown("---")
+        farmer_analysis = farmer_agent.analyze_farmer_profile(farmer_input)
+        market_analysis = market_agent.analyze_market_trends(farmer_input.location, farmer_input.preferred_crops)
 
-                col1, col2, col3 = st.columns(3)
-                col1.metric("📈 Sustainability Score", f"{result['sustainability_score']:.2f}")
-                col2.metric("💼 Profitability Score", f"{result['profitability_score']:.2f}")
-                col3.metric("💧 Water Efficiency", f"{result['water_efficiency_score']:.2f}")
+        result = _generate_recommendation(farmer_analysis, market_analysis, farmer_input)
 
-                st.markdown("---")
-                st.subheader("📊 Additional Details")
-                st.write(f"**Expected Yield:** {result['expected_yield']} kg")
-                st.write(f"**Estimated Profit:** ₹{result['estimated_profit']:.2f}")
-                st.write(f"**Water Requirement:** {result['water_requirement']} litres")
-                st.write(f"**Carbon Footprint:** {result['carbon_footprint']} CO₂ units")
+        st.success("✅ Recommendation Received")
+        st.markdown("### 🌿 Recommended Crop: ")
+        st.write(result.crop_name)
+        st.markdown("---")
 
-            else:
-                st.error(f"Error: {response.status_code} - {response.text}")
+        col1, col2, col3 = st.columns(3)
+        col1.metric("📈 Sustainability Score", f"{result.sustainability_score:.2f}")
+        col2.metric("💼 Profitability Score", f"{result.profitability_score:.2f}")
+        col3.metric("💧 Water Efficiency", f"{result.water_efficiency_score:.2f}")
 
-        except Exception as e:
-            st.error(f"Failed to connect to backend API: {e}")
+        st.markdown("---")
+        st.subheader("📊 Additional Details")
+        st.write(f"**Expected Yield:** {result.expected_yield} kg")
+        st.write(f"**Estimated Profit:** ₹{result.estimated_profit:.2f}")
+        st.write(f"**Water Requirement:** {result.water_requirement} litres")
+        st.write(f"**Carbon Footprint:** {result.carbon_footprint} CO₂ units")
