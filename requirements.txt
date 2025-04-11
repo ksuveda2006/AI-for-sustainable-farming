@@ -1,7 +1,7 @@
-streamlit
-requests
-pandas
 fastapi
 uvicorn
+pandas
 sqlalchemy
 pydantic
+requests
+streamlit
