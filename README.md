@@ -1,6 +1,20 @@
 # AI-for-sustainable-farming
 
 
-![image](https://github.com/user-attachments/assets/a37ae3e3-b849-4460-a9f1-b9285f2dcc0d)
-
+sustainable-farming-ai/
+│
+├── 📁 backend/
+│   ├── main.py                   # FastAPI app
+│   └── farming.db                # SQLite DB (auto-created)
+│
+├── 📁 frontend/
+│   └── streamlit_app.py          # Streamlit frontend
+│
+├── 📁 data/
+│   ├── farmer_advisor_dataset.csv
+│   └── market_researcher_dataset.csv
+│
+├── requirements.txt              # All dependencies
+├── README.md                     # Project description
+└── .gitignore
 
