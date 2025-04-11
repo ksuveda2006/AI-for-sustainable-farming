@@ -1,0 +1,67 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+.ENV/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Python egg metadata
+*.egg-info/
+.eggs/
+
+# Data files (optional - if you want to keep data local only)
+data/*.csv
+
+# SQLite or other local DBs
+*.db
+*.sqlite3
+
+# Logs and debug files
+*.log
+
+# Test output
+htmlcov/
+.tox/
+.coverage
+.cache
+.nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE/editor files
+.vscode/
+.idea/
+
+# Streamlit specific
+.streamlit/config.toml
+.streamlit/credentials.toml
+
+# Environment variable files
+.env
+.env.*
+
+# Packages
+*.whl
+*.egg
+dist/
+build/
+
+# Pip files
+pip-log.txt
+pip-delete-this-directory.txt
