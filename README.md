@@ -2,6 +2,8 @@
 
 
 
+**Project Deployed Website Link**: https://ai-for-sustainable-farming.streamlit.app/
+
 
 # Sustainable Farming AI System 🌱
 
