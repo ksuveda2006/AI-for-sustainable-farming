@@ -31,3 +31,9 @@ uvicorn main:app --reload
 # In new terminal, run Streamlit frontend
 cd ../frontend
 streamlit run streamlit_app.py
+
+
+
+
+![image](https://github.com/user-attachments/assets/7b10010f-8813-423f-9afd-92a3a94405fb)
+
