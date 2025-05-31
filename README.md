@@ -2,6 +2,12 @@
 
 
 
+
+
+
+![image](https://github.com/user-attachments/assets/a6c01f3e-4a88-44c3-8429-6c9f4f2aeb99)
+
+
 **Project Deployed Website Link**: https://ai-for-sustainable-farming.streamlit.app/
 
 
@@ -35,5 +41,5 @@ streamlit run streamlit_app.py
 
 
 
-![image](https://github.com/user-attachments/assets/7b10010f-8813-423f-9afd-92a3a94405fb)
+
 
